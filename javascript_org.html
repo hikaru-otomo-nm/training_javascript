@@ -8,6 +8,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.4.0/marked.min.js"></script>
   <title>お問い合わせフォーム</title>
   <script>
+    //初期処理
+    window.onload = function() {
+      document.getElementById("input_address").style.display = "none";
+    }
+
     function check() {
       // テキストに入力した値を変数に代入
       var getFirstName = document.getElementById("firstname").value;
@@ -19,66 +24,61 @@
       var getInquiry = document.getElementById("inquiry").value;
       var getEmail = document.getElementById("email").value;
 
-      console.log();
       var errorList = [];
+      //値を数値チェックし、上限以上だった場合、配列にpush
       if (getFirstName.length > 3) {
         errorList.push(document.getElementById("firstname").name);
       }
-      if (getLastName.length >= 3) {
+      if (getLastName.length > 3) {
         errorList.push(document.getElementById("lastname").name);
       }
-      if (getFirstNameKana.length >= 3) {
+      if (getFirstNameKana.length > 3) {
         errorList.push(document.getElementById("firstname_kana").name);
       }
-      if (getLastnNameKana.length >= 3) {
+      if (getLastnNameKana.length > 3) {
         errorList.push(document.getElementById("lastname_kana").name);
       }
-      if (getAddress.length >= 3) {
+      if (getAddress.length > 3) {
         errorList.push(document.getElementById("address").name);
       }
-      if (getInquiry.length >= 3) {
+      if (getInquiry.length > 3) {
         errorList.push(document.getElementById("inquiry").name);
       }
 
       var error = document.getElementById("error");
 
       console.log(errorList.length);
+      //エラー文の出力
       for (var i = 0; i < errorList.length; i++) {
         console.log("ERRLIST : " + errorList[i]);
         error.insertAdjacentHTML('beforeend', "<p style='color:red' id='error'>" + errorList[i] + "は、文字数が上限を達しました。</p>");
       }
-
-      //採用について
-      function func(obj) {
-        var name = document.input_category.category.value;
-        console.log(obj.value);
-        if (obj.value == "採用について") {
-
-          document.alert("甘くておいしいよー！！")
-        }
-      }
-      //
-      // function input_category() {
-      //   if (inquiry_category_no3) {
-      //     var data = "「採用について」が選択されました。"
-      //     alert(data);
-      //   }
-      // }
-
-
-      // if (!getPostalNo.match(/[0-9]{3}[0-9]{4}/)) {
-      //   error1.innerHTML = document.getElementById("postal_no").name + "は、数字のみです。";
-      // }
-      //
-      //
-      // if (!getEmail.match(/.+@.+\..+/)) {
-      //   error_email.innerHTML = "メールアドレスの形式が異なります。";
-      // }
     }
+
+    //採用について
+    function category() {
+      var category_value = document.getElementById("category").value;
+      if (category_value == "採用について") {
+        alert("「" + category_value + "」が選択されました。");
+        document.getElementById("input_address").style.display = "block";
+      } else {
+        document.getElementById("input_address").style.display = "none";
+      }
+    }
+
+    // if (!getPostalNo.match(/[0-9]{3}[0-9]{4}/)) {
+    //   error1.innerHTML = document.getElementById("postal_no").name + "は、数字のみです。";
+    // }
+    //
+    //
+    // if (!getEmail.match(/.+@.+\..+/)) {
+    //   error_email.innerHTML = "メールアドレスの形式が異なります。";
+    // }
   </script>
 </head>
 
 <body>
+
   <h2>お問い合わせフォーム</h2>
   <div id="error"></div>
   <!-- <p style="color:red" id="error1"></p>
@@ -98,15 +98,17 @@
 
     <label for="lastname_kana">フリガナ（名）</label>
     <input type="text" id="lastname_kana" name="フリガナ（名）"> ※全角１００文字以内<br>
-  </div>
-  <div>
+  </div><br>
+
+  <div class="input_email">
     <label for="email">メールアドレス</label>
     <input type="text" id="email" name="メールアドレス"> <br>
-  </div>
+  </div><br>
 
-  <div class="input_category">
+  <div id="input_category">
     <label for="category">お問い合わせ<br>カテゴリ</label>
-    <select name="category" onchange="func(this)">
+    <select id="category" onchange="category()">
+      <option value=""></option>
       <option value="システムの使用方法について">システムの使用方法について</option>
       <option value="システムの不具合について">システムの不具合について</option>
       <option value="採用について">採用について</option>
@@ -115,15 +117,14 @@
 
   <br>
 
-  <div class="input_address">
+  <div id="input_address">
     <label for="postal_no">郵便番号</label>
     <input type="text" name="郵便番号" id="postal_no">
     <button type="">検索</button><br>
-
     <label for="address">住所</label>
     <input type="text" name="住所" id="address"> ※全角１００文字以内<br>
   </div>
-
+  <br>
   <div class="input_inquiry">
     <label for="inquiry">お問い合わせ<br>内容</label><br>
     <textarea id="inquiry" name="お問い合わせ内容"></textarea> ※全角１００文字以内<br>
