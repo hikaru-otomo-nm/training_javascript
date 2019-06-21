@@ -14,6 +14,18 @@
     }
 
     function check() {
+
+      const inputData = {
+        lastname: '名前（氏）',
+        firstname: '名前（名）',
+        lastname_kana: 'フリガナ（氏）',
+        firstname_kana: 'フリガナ（名）',
+        postal_no: '郵便番号',
+        address: '住所',
+        inquiry: 'お問い合わせ番号',
+        email: 'メールアドレス'
+      };
+
       // テキストに入力した値を変数に代入
       var getLastName = document.getElementById("lastname").value;
       var getFirstName = document.getElementById("firstname").value;
@@ -26,30 +38,43 @@
       var getEmail = document.getElementById("email").value;
 
       var errorList = [];
-      //値を数値チェックし、上限以上だった場合、配列にpush
 
+      console.log("getLastName : " + getLastName);
+      //値を数値チェックし、上限以上だった場合、配列にpush
       if (getLastName.length > 3) {
-        errorList.push(document.getElementById("lastname").name);
+        errorList.push(Object.values(inputData.lastname));
       }
       if (getFirstName.length > 3) {
-        errorList.push(document.getElementById("firstname").name);
+        errorList.push(Object.values(inputData.firstname));
       }
       if (getFirstNameKana.length > 3) {
-        errorList.push(document.getElementById("firstname_kana").name);
+        errorList.push(Object.values(inputData.firstname_kana));
       }
       if (getLastnNameKana.length > 3) {
-        errorList.push(document.getElementById("lastname_kana").name);
+        errorList.push(Object.values(inputData.lastname_kana));
       }
       if (getAddress.length > 3) {
-        errorList.push(document.getElementById("address").name);
+        errorList.push(Object.values(inputData.address));
       }
       if (getInquiry.length > 3) {
-        errorList.push(document.getElementById("inquiry").name);
+        errorList.push(Object.values(inputData.inquiry));
       }
+
+      //   if (!getPostalNo.match(/[0-9]{3}[0-9]{4}/)) {
+      //     errorList.push(document.getElementById("postal_no").name + "は、数字のみです。");
+      //   }
+      //
+      //
+      // if (!getEmail.match(/.+@.+\..+/)) {
+      //   errorList.push("メールアドレスの形式が異なります。");
+      // }
 
       var error = document.getElementById("error");
 
-      console.log(errorList.length);
+
+
+      // console.log("errorList1" + errorList1);
+
       //エラー文の出力
       for (var i = 0; i < errorList.length; i++) {
         console.log("ERRLIST : " + errorList[i]);
@@ -67,15 +92,6 @@
         document.getElementById("input_address").style.display = "none";
       }
     }
-
-    // if (!getPostalNo.match(/[0-9]{3}[0-9]{4}/)) {
-    //   error1.innerHTML = document.getElementById("postal_no").name + "は、数字のみです。";
-    // }
-    //
-    //
-    // if (!getEmail.match(/.+@.+\..+/)) {
-    //   error_email.innerHTML = "メールアドレスの形式が異なります。";
-    // }
   </script>
 </head>
 
@@ -89,10 +105,10 @@
 
   <div class="input_name">
     <label for="lastname">名前（氏）</label>
-    <input type="text" id="lastname" name="lastname"> ※全角５０文字以内<br>
+    <input type="text" id="lastname" name="lastname" onInput="check()"> ※全角５０文字以内<br>
 
     <label for="firstname">名前（名）</label>
-    <input type="text" id="firstname" name="firstname"> ※全角５０文字以内<br>
+    <input type="text" id="firstname" name="firstname" onInput="check()"> ※全角５０文字以内<br>
 
     <label for="lastname_kana">フリガナ（氏）</label>
     <input type="text" id="lastname_kana" name="lastname_kana"> ※全角１００文字以内<br>
