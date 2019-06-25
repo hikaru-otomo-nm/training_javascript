@@ -4,8 +4,6 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.4.0/marked.min.js"></script>
   <title>お問い合わせフォーム</title>
   <script>
     //初期処理
@@ -17,25 +15,25 @@
       lastname: {
         'name': '名前（氏）',
         'require': true,
-        'max_size': 3,
+        'max_size': 50,
         'regex': '^[^\x01-\x7E\xA1-\xDF]+$'
       },
       firstname: {
         'name': '名前（名）',
         'require': true,
-        'max_size': 3,
+        'max_size': 50,
         'regex': '^[^\x01-\x7E\xA1-\xDF]+$'
       },
       lastname_kana: {
         'name': 'フリガナ（氏）',
         'require': true,
-        'max_size': 3,
+        'max_size': 100,
         'regex': '^[\u30a0-\u30ff]+$'
       },
       firstname_kana: {
         'name': 'フリガナ（名）',
         'require': true,
-        'max_size': 3,
+        'max_size': 100,
         'regex': '^[\u30a0-\u30ff]+$'
       },
       postal_no: {
@@ -47,19 +45,16 @@
       address: {
         'name': '住所',
         'require': true,
-        'max_size': 3,
-        'regex': '^[^\x01-\x7E\xA1-\xDF]+$'
+        'max_size': 100
       },
       inquiry: {
         'name': 'お問い合わせ内容',
         'require': true,
-        'max_size': 3,
-        'regex': '^[^\x01-\x7E\xA1-\xDF]+$'
+        'max_size': 100
       },
       email: {
         'name': 'メールアドレス',
         'require': true,
-        'max_size': 50,
         'regex': '[A-Za-z0-9\._+]+@[A-Za-z]+\.[A-Za-z]'
       }
     };
@@ -86,7 +81,7 @@
         }
 
         // 長さチェック
-        if (k == "max_size" && getValue.length > checkItem.max_size) {
+        if (k == "max_size" && getValue.length >= checkItem.max_size) {
           errorMessages.max_size = checkItem.name + 'が長すぎます';
         }
 
