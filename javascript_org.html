@@ -4,11 +4,12 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <title>お問い合わせフォーム</title>
   <script>
     //初期処理
     window.onload = function() {
-      document.getElementById("input_address").style.display = "none";
+      // document.getElementById("input_address").style.display = "none";
     }
 
     const checkItems = {
@@ -81,7 +82,7 @@
         }
 
         // 長さチェック
-        if (k == "max_size" && getValue.length >= checkItem.max_size) {
+        if (k == "max_size" && getValue.length > checkItem.max_size) {
           errorMessages.max_size = checkItem.name + 'が長すぎます';
         }
 
@@ -113,6 +114,47 @@
         document.getElementById("input_address").style.display = "none";
       }
     }
+
+
+    $(function() {
+      //検索ボタンをクリックされたときに実行
+      $("#search_button").click(function() {
+        //入力値をセット
+        var param = {
+          zipcode: $('#postal_no').val()
+        }
+        //zipcloudのAPIのURL
+        var send_url = "http://zipcloud.ibsnet.co.jp/api/search";
+        $.ajax({
+          type: "GET",
+          cache: false,
+          data: param,
+          url: send_url,
+          dataType: "json",
+          success: function(res) {
+            if (res.status == 200 && res.result != null ) {
+              //正常終了
+              var html = '';
+              for (var i = 0; i < res.results.length; i++) {
+                var result = res.results[i];
+                console.log(res.results);
+                html += result.address1;
+                html += result.address2;
+                html += result.address3;
+              }
+              $('#zip_result').html(html);
+            } else {
+              //エラー
+              $('#zip_result').html(res.message);
+
+            }
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest);
+          }
+        });
+      });
+    });
   </script>
 </head>
 
@@ -153,12 +195,16 @@
 
   <div id="input_address">
     <label for="postal_no">郵便番号</label>
-    <input type="text" name="郵便番号" id="postal_no" onInput="check('postal_no')">
-    <button type="">検索</button><br>
+    <input type="text" name="postal_no" id="postal_no" onInput="check('postal_no')">
+    <input type="button" id="search_button" value="検索"><br>
+
+    <div id="zip_result">住所を出力</div><br>
+
     <label for="address">住所</label>
-    <input type="text" name="address" id="address" onInput="check('address')"> ※全角１００文字以内<br>
+    <input type="text" name="address" id="address" onInput="addressSearch('address')"> ※全角１００文字以内<br>
+    <br>
   </div>
-  <br>
+
   <div class="input_inquiry">
     <label for="inquiry">お問い合わせ<br>内容</label><br>
     <textarea id="inquiry" name="inquiry" onInput="check('inquiry')"></textarea> ※全角１００文字以内<br>
