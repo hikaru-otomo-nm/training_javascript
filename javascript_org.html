@@ -9,9 +9,9 @@
   <script>
     //初期処理
     window.onload = function() {
-      // document.getElementById("input_address").style.display = "none";
+      document.getElementById("input_address").style.display = "none";
     }
-
+    //定義
     const checkItems = {
       lastname: {
         'name': '名前（氏）',
@@ -61,15 +61,15 @@
     };
 
     function check(item) {
-      var errorMessages = {};
+      let errorMessages = {};
       //値を取得
-      var getValue = document.getElementById(item).value;
+      const getValue = document.getElementById(item).value;
 
-      var checkItem = checkItems[item];
+      const checkItem = checkItems[item];
 
       for (let k in checkItem) {
-        var errorMessageId = item + "_" + k;
-        var errorMessageP = document.getElementById(errorMessageId);
+        const errorMessageId = item + "_" + k;
+        let errorMessageP = document.getElementById(errorMessageId);
 
         // 既存のエラーメッセージを削除
         if (errorMessageP != null) {
@@ -86,19 +86,19 @@
           errorMessages.max_size = checkItem.name + 'が長すぎます';
         }
 
-        var pattern = new RegExp(checkItem.regex);
-
         // パターンチェック
+        const pattern = new RegExp(checkItem.regex);
+
         if (k == "regex" && null == getValue.match(pattern) && getValue != "") {
           errorMessages.regex = checkItem.name + 'は文字形式が違います';
         }
       }
 
-      var error = document.getElementById("error");
+      const error = document.getElementById("error");
 
       for (let k in errorMessages) {
         // メッセージのDOMを作る
-        var p_errormsg = "<p style='color:red' id='" + item + "_" + k + "'>" + errorMessages[k] + "</p>"
+        let p_errormsg = "<p style='color:red' id='" + item + "_" + k + "'>" + errorMessages[k] + "</p>"
         // 作ったDOMエラーのタグに追加する
         error.insertAdjacentHTML('beforeend', p_errormsg);
       }
@@ -106,7 +106,7 @@
 
     //採用について
     function category() {
-      var category_value = document.getElementById("category").value;
+      const category_value = document.getElementById("category").value;
       if (category_value == "category_no3") {
         alert("「採用について」が選択されました。");
         document.getElementById("input_address").style.display = "block";
@@ -120,39 +120,43 @@
       //検索ボタンをクリックされたときに実行
       $("#search_button").click(function() {
         //入力値をセット
-        var param = {
+        let param = {
           zipcode: $('#postal_no').val()
         }
         //zipcloudのAPIのURL
-        var send_url = "http://zipcloud.ibsnet.co.jp/api/search";
+        let send_url = "http://zipcloud.ibsnet.co.jp/api/search";
         $.ajax({
-          type: "GET",
-          cache: false,
-          data: param,
-          url: send_url,
-          dataType: "json",
-          success: function(res) {
-            if (res.status == 200 && res.result != null ) {
-              //正常終了
-              var html = '';
-              for (var i = 0; i < res.results.length; i++) {
-                var result = res.results[i];
-                console.log(res.results);
-                html += result.address1;
-                html += result.address2;
-                html += result.address3;
+            type: "GET",
+            cache: false,
+            data: param,
+            url: send_url,
+            dataType: "jsonp"
+          })
+          .then(
+            function(res) {
+              console.log("A : " + res.status);
+              console.log("A : " + res.results[0].address1);
+              if (res.results == null && res.status == 200) {
+                $('#zip_result').html("住所検索に失敗しました。");
+              } else if (res.status == 200) {
+                //正常終了
+                let html_address = '';
+                for (let i = 0; i < res.results.length; i++) {
+                  let result = res.results[i];
+                  html_address += result.address1;
+                  html_address += result.address2;
+                  html_address += result.address3;
+                }
+                address.value = html_address;
+              } else {
+                //エラー
+                $('#zip_result').html(res.message);
               }
-              $('#zip_result').html(html);
-            } else {
-              //エラー
-              $('#zip_result').html(res.message);
-
+            },
+            function(XMLHttpRequest, textStatus, errorThrown) {
+              console.log(XMLHttpRequest);
             }
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(XMLHttpRequest);
-          }
-        });
+          );
       });
     });
   </script>
@@ -195,19 +199,19 @@
 
   <div id="input_address">
     <label for="postal_no">郵便番号</label>
-    <input type="text" name="postal_no" id="postal_no" onInput="check('postal_no')">
-    <input type="button" id="search_button" value="検索"><br>
+    <input type="text" name="postal_no" id="postal_no" onInput="check('postal_no')" value="">
+    <input type="button" id="search_button" value="検索">
 
-    <div id="zip_result">住所を出力</div><br>
+    <div id="zip_result"></div><br>
 
     <label for="address">住所</label>
-    <input type="text" name="address" id="address" onInput="addressSearch('address')"> ※全角１００文字以内<br>
+    <input type="text" name="address" id="address" onInput="check('address')"> ※１００文字以内<br>
     <br>
   </div>
 
   <div class="input_inquiry">
     <label for="inquiry">お問い合わせ<br>内容</label><br>
-    <textarea id="inquiry" name="inquiry" onInput="check('inquiry')"></textarea> ※全角１００文字以内<br>
+    <textarea id="inquiry" name="inquiry" onInput="check('inquiry')"></textarea> ※１０００文字以内<br>
   </div>
 
   <button id="check_button" onClick='check()'>送信</button>
